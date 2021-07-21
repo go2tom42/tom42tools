@@ -30,10 +30,10 @@ CompanyName = 'Unknown'
 Copyright = '(c) tom42. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'Windows reinstall tools'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+# PowerShellVersion = '5'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -69,7 +69,7 @@ Copyright = '(c) tom42. All rights reserved.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = @('DeployMe','Set-RunOnce','isURIWeb')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -101,7 +101,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/go2tom42/tom42tools'
 
         # A URL to an icon representing this module.
         # IconUri = ''
