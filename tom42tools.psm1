@@ -717,6 +717,14 @@ function Restore-Firefox {
         $FILE = "C:\WORK\Firefox-Profile-Backup-20221020T1227110604.7z"
 
     )
+    
+    Try {
+        get-command "7z" -ErrorAction Stop -ErrorVariable ModFail             
+    }
+    Catch {
+        choco install 7zip.install
+    }
+
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
         $firefox | Stop-Process -Force
