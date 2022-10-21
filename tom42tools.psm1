@@ -143,7 +143,7 @@ function Set-DefaultSetup {
     $dlfile.Downloadfile("https://t0m.pw/tcmd", "$env:TEMP\tcmd.exe")
     $dlfile.Downloadfile("https://t0m.pw/wfc", "$env:TEMP\wfc6setup.exe")
     $dlfile.Downloadfile("https://t0m.pw/terminal", "$env:TEMP\Microsoft.WindowsTerminal.zip")
-    choco install 7zip.install firefox notepadplusplus.install path-copy-copy winrar
+    choco install 7zip.install firefox notepadplusplus.install path-copy-copy winrar setdefaultbrowser
 	
     try {
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
@@ -220,6 +220,7 @@ user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 "@
 
     Add-Content -Path $FirefoxProfile -Value $prefsjs
+    Start-Process -FilePath "SetDefaultBrowser.exe" -ArgumentList "HKLM Firefox-308046B0AF4A39CB" -Wait -PassThru -NoNewWindow
 }
 
 function Install-WinUpdate {
@@ -745,7 +746,7 @@ function Restore-Firefox {
     $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
     $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
     Start-Process -FilePath $FirefoxEXE 
-    Start-Sleep -Seconds 10
+    Start-Sleep -Seconds 5
     
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
@@ -772,7 +773,7 @@ function Restore-Firefox {
         Set-PolicyFileEntry -Path $UserDir -Key $RegPath -ValueName $RegName.ToString() -Data $RegData -Type $RegType
         $RegName++
     }
-    gpupdate.exe /force
+    Start-Process -FilePath "gpupdate.exe" -ArgumentList "/force" -Wait -PassThru -NoNewWindow
     #Active end
 
     
@@ -788,7 +789,7 @@ function Restore-Firefox {
     $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
     $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
     Start-Process -FilePath $FirefoxEXE 
-    Start-Sleep -Seconds 10
+    Start-Sleep -Seconds 5
     
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
