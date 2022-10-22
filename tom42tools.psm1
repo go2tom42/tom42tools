@@ -230,9 +230,15 @@ function Install-WinUpdate {
     catch {
         #Do Nothing
     }
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module PSWindowsUpdate -Force
-    Import-Module PSWindowsUpdate -Force
+
+    Try {
+        get-command "Install-WindowsUpdate" -ErrorAction SilentlyContinue -ErrorVariable ModFail 
+    }
+    Catch {
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+        Install-Module PSWindowsUpdate -Force
+        Import-Module PSWindowsUpdate -Force
+    }
     Get-WindowsUpdate 
     Install-WindowsUpdate -AcceptAll -AutoReboot   
 }
@@ -556,13 +562,20 @@ Function Get-IniFile ($file) {
 }
 
 function Backup-Firefox {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $false)]
+        [string]
+        $OUTFOLDER
+
+    )
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
         $firefox | Stop-Process -Force
     }
     Start-Sleep -Seconds 3
     Try {
-        get-command "7z" -ErrorAction Stop -ErrorVariable ModFail             
+        get-command "7z" -ErrorAction SilentlyContinue -ErrorVariable ModFail             
     }
     Catch {
         choco install 7zip.install
@@ -643,33 +656,89 @@ function Backup-Firefox {
     $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\extensions.7z" + '" "' + "$CurrentPath\extensions\*" + '"'
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
     $filelist = New-Object System.Collections.ArrayList
-    $filelist.Add("$profilepath\places.sqlite")
-    $filelist.Add("$profilepath\favicons.sqlite")
-    $filelist.Add("$profilepath\key4.db")
-    $filelist.Add("$profilepath\logins.json")
-    $filelist.Add("$profilepath\permissions.sqlite")
-    $filelist.Add("$profilepath\content-prefs.sqlite")
-    $filelist.Add("$profilepath\search.json.mozlz4")
-    $filelist.Add("$profilepath\persdict.dat")
-    $filelist.Add("$profilepath\formhistory.sqlite")
-    $filelist.Add("$profilepath\cookies.sqlite")
-    $filelist.Add("$profilepath\webappsstore.sqlite")
-    $filelist.Add("$profilepath\chromeappsstore.sqlite")
-    $filelist.Add("$profilepath\cert9.db")
-    $filelist.Add("$profilepath\pkcs11.txt")
-    $filelist.Add("$profilepath\handlers.json")
-    $filelist.Add("$profilepath\sessionstore.jsonlz4")
-    $filelist.Add("$profilepath\xulstore.json")
-    $filelist.Add("$profilepath\prefs.js")
-    $filelist.Add("$profilepath\containers.json")
-    $filelist.Add("$CurrentPath\extensions.txt")
-    $filelist.Add("$CurrentPath\disabled-extensions.txt")
-    $filelist.Add("$CurrentPath\activeextensions.7z")
-    $filelist.Add("$CurrentPath\extensions.7z")
+
+    if (Test-Path -Path "$CurrentPath\extensions.7z") {
+        $filelist.Add("$CurrentPath\extensions.7z")        
+    }
+    if (Test-Path -Path "$CurrentPath\activeextensions.7z") {
+        $filelist.Add("$CurrentPath\activeextensions.7z")        
+    }	
+    if (Test-Path -Path "$CurrentPath\disabled-extensions.txt") {
+        $filelist.Add("$CurrentPath\disabled-extensions.txt")        
+    }
+    if (Test-Path -Path "$CurrentPath\extensions.txt") {
+        $filelist.Add("$CurrentPath\extensions.txt")        
+    }
+    if (Test-Path -Path "$profilepath\containers.json") {
+        $filelist.Add("$profilepath\containers.json")        
+    }
+    if (Test-Path -Path "$profilepath\prefs.js") {
+        $filelist.Add("$profilepath\prefs.js")        
+    }
+    if (Test-Path -Path "$profilepath\xulstore.json") {
+        $filelist.Add("$profilepath\xulstore.json")        
+    }
+    if (Test-Path -Path "$profilepath\sessionstore.jsonlz4") {
+        $filelist.Add("$profilepath\sessionstore.jsonlz4")        
+    }
+    if (Test-Path -Path "$profilepath\handlers.json") {
+        $filelist.Add("$profilepath\handlers.json")        
+    }
+    if (Test-Path -Path "$profilepath\pkcs11.txt") {
+        $filelist.Add("$profilepath\pkcs11.txt")        
+    }
+    if (Test-Path -Path "$profilepath\cert9.db") {
+        $filelist.Add("$profilepath\cert9.db")        
+    }
+    if (Test-Path -Path "$profilepath\chromeappsstore.sqlite") {
+        $filelist.Add("$profilepath\chromeappsstore.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\webappsstore.sqlite") {
+        $filelist.Add("$profilepath\webappsstore.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\cookies.sqlite") {
+        $filelist.Add("$profilepath\cookies.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\formhistory.sqlite") {
+        $filelist.Add("$profilepath\formhistory.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\persdict.dat") {
+        $filelist.Add("$profilepath\persdict.dat")        
+    }
+    if (Test-Path -Path "$profilepath\search.json.mozlz4") {
+        $filelist.Add("$profilepath\search.json.mozlz4")        
+    }
+    if (Test-Path -Path "$profilepath\content-prefs.sqlite") {
+        $filelist.Add("$profilepath\content-prefs.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\permissions.sqlite") {
+        $filelist.Add("$profilepath\permissions.sqlite")        
+    }
+    if (Test-Path -Path "$profilepath\logins.json") {
+        $filelist.Add("$profilepath\logins.json")
+    }
+    if (Test-Path -Path "$profilepath\key4.db") {
+        $filelist.Add("$profilepath\key4.db") 
+    }
+    if (Test-Path -Path "$profilepath\favicons.sqlite") {
+        $filelist.Add("$profilepath\favicons.sqlite") 
+    }
+    if (Test-Path -Path "$profilepath\places.sqlite") {
+        $filelist.Add("$profilepath\places.sqlite")
+    }
     $filelist | Out-File "$CurrentPath\filelist.txt"
 
     $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Firefox-Profile-Backup-$ProfileFileName.7z" + '" @"' + "$CurrentPath\filelist.txt" + '"'
+
+    if ($OUTFOLDER) {
+        $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$OUTFOLDER\Firefox-Profile-Backup-$ProfileFileName.7z" + '" @"' + "$CurrentPath\filelist.txt" + '"'
+    }
+
+
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+
+
+
 
     Remove-Item -Path "$CurrentPath\extensions" -Recurse -Force
     Remove-Item -Path "$CurrentPath\activeextensions" -Recurse -Force
