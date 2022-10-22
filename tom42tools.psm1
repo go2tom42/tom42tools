@@ -558,21 +558,16 @@ Function Get-IniFile ($file) {
 function Backup-Firefox {
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
-        # try gracefully first
-        $firefox.CloseMainWindow()
-        # kill after five seconds
-        Sleep 10
-        if (!$firefox.HasExited) {
-            $firefox | Stop-Process -Force
-        }
+        $firefox | Stop-Process -Force
     }
-
+    Start-Sleep -Seconds 3
     Try {
         get-command "7z" -ErrorAction Stop -ErrorVariable ModFail             
     }
     Catch {
         choco install 7zip.install
     }
+
     $CurrentPath = (Get-Location).path
     $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
     $extensionsJSON = Get-Content -Raw "$profilepath\extensions.json" | ConvertFrom-Json
@@ -584,32 +579,22 @@ function Backup-Firefox {
     foreach ($EXT in $extensionsJSON.addons) {
         if ($extensionsJSON.addons[$i].active -eq $true) {
             if (isURIWeb $extensionsJSON.addons[$i].sourceURI) {
-                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-.*.xpi', "-latest.xpi"
+                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-(?!media).*.xpi', "-latest.xpi" -replace '\?.*'
                 $extactive.Add($extensionsJSONsuncle.split('?')[0])
-            }
-            else {
-                if (isURIFile $extensionsJSON.addons[$i].path -eq $true) {
-                    New-Item -Path "$CurrentPath\activeextensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
-                    $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
-                    $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
-                    Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\activeextensions\$extensionsJSONsuncle.xpi"
-                }
-
+                New-Item -Path "$CurrentPath\activeextensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
+                $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
+                $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
+                Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\activeextensions\$extensionsJSONsuncle.xpi"
             }
         }
         else {
             if (isURIWeb $extensionsJSON.addons[$i].sourceURI) {
-                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-.*.xpi', "-latest.xpi"
+                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-(?!media).*.xpi', "-latest.xpi" -replace '\?.*'
                 $extdisabled.Add($extensionsJSONsuncle.split('?')[0])
-            }
-            else {
-                if (isURIFile $extensionsJSON.addons[$i].path -eq $true) {
-                    New-Item -Path "$CurrentPath\extensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
-                    $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
-                    $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
-                    Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\extensions\$extensionsJSONsuncle.xpi"
-                }
-
+                New-Item -Path "$CurrentPath\extensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
+                $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
+                $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
+                Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\extensions\$extensionsJSONsuncle.xpi"
             }
         }
         $i++
@@ -693,15 +678,6 @@ function Backup-Firefox {
     Remove-Item -Path "$CurrentPath\activeextensions.7z" -Recurse -Force
     Remove-Item -Path "$CurrentPath\extensions.7z" -Recurse -Force
     Remove-Item -Path "$CurrentPath\filelist.txt" -Recurse -Force
-    if ($firefox) {
-        # try gracefully first
-        $firefox.CloseMainWindow()
-        # kill after five seconds
-        Sleep 5
-        if (!$firefox.HasExited) {
-            $firefox | Stop-Process -Force
-        }
-    }
     if ($firefox) {
         $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
         $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
