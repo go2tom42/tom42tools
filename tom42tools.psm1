@@ -77,19 +77,19 @@ function Get-BAFile() {
     param(
         [parameter(Mandatory = $True)]
         [string]
-        $URL = 'NA',
+        $URL,
 
         [parameter(Mandatory = $True)]
         [string]
-        $PATH = 'NA',
+        $PATH,
 
         [parameter(Mandatory = $True)]
         [string]
-        $USER = 'NA',
+        $USER,
 
         [parameter(Mandatory = $True)]
         [string]
-        $PASS = 'NA'
+        $PASS
     )
 
     if ($PATH -eq 'NA') { Write-Host 'NOT VALID PATH'; exit }
@@ -166,7 +166,7 @@ function Set-DefaultSetup {
     New-ItemProperty "HKLM:\SOFTWARE\Ghisler\Total Commander" -Name "IniFileName" -Value ".\wincmd.ini" -type String -erroraction SilentlyContinue
     New-ItemProperty "HKCU:\SOFTWARE\Ghisler\Total Commander" -Name "IniFileName" -Value ".\wincmd.ini" -type String -erroraction SilentlyContinue
 
-
+    
     $wincmdini = 'W0NvbmZpZ3VyYXRpb25dDQpJbnN0YWxsRGlyPUM6XFByb2dyYW0gRmlsZXNcdG90YWxjbWQNClVzZU5ld0RlZkZvbnQ9MQ0KU2V0RW5jb2Rpbmc95PYuZG8ubm90LnJlbW92ZQ0KZmlyc3RtbnU9MjY4Mg0KRmlyc3RUaW1lPTANCkZpcnN0VGltZUljb25MaWI9MA0KdGVzdD0xODUNClNob3dIaWRkZW5TeXN0ZW09MQ0KVXNlTG9uZ05hbWVzPTENClNtYWxsODNOYW1lcz0wDQpPbGRTdHlsZVRyZWU9MA0KYXV0b3RyZWVjaGFuZ2U9MA0KRGlyQnJhY2tldHM9MQ0KU2hvd1BhcmVudERpckluUm9vdD0wDQpTb3J0RGlyc0J5TmFtZT0xDQpUaXBzPTMNCkZpbGVUaXBXaW5kb3dzPTANCldpbjMyVGlwV2luZG93cz0wDQpTb3J0VXBwZXI9MA0KU2hvd0NlbnR1cnk9MQ0KQWxpZ25lZCBleHRlbnNpb249MA0KU2l6ZVN0eWxlPTANClNpemVGb290ZXI9MQ0KU2VwYXJhdGVUcmVlPTANClBhbmVsc1ZlcnRpY2FsPTANCltCdXR0b25iYXJDYWNoZV0NCkljb25EbGxfZGVmYXVsdC5iYXI9DQpJY29uRGxsX3ZlcnRpY2FsLmJhcj0NCltGaWxlU3lzdGVtUGx1Z2luczY0XQ0KJGNoZWNrc3VtJD0zMDE0NjcyDQpbTGF5b3V0XQ0KQnV0dG9uQmFyPTENCkJ1dHRvbkJhclZlcnRpY2FsPTENCkRyaXZlQmFyMT0xDQpEcml2ZUJhcjI9MQ0KRHJpdmVCYXJGbGF0PTENCkludGVyZmFjZUZsYXQ9MQ0KRHJpdmVDb21ibz0xDQpEaXJlY3RvcnlUYWJzPTENClhQdGhlbWVCZz0xDQpDdXJEaXI9MQ0KVGFiSGVhZGVyPTENClN0YXR1c0Jhcj0xDQpDbWRMaW5lPTENCktleUJ1dHRvbnM9MQ0KSGlzdG9yeUhvdGxpc3RCdXR0b25zPTENCkJyZWFkQ3J1bWJCYXI9MQ0KW1RhYnN0b3BzXQ0KMD0yMjgNCjE9MjMxDQozPTI4Ng0KND0tMQ0KNj02MjkNCjU9MTAwDQpBZGp1c3RXaWR0aD0xDQpbMTkyMHgxMDgwICg4eDE2KV0NClRhYnN0b3BzPTIyOCwyMzEsMjg2LC0xLDYyOSwxMDAsNTANCltsZWZ0XQ0KcGF0aD1DOlxQcm9ncmFtRGF0YVwNClZpZXdNb2RlPTEwMDAxDQphY3RpdmVwYW5lbGNvbG9yPS0xDQphY3RpdmVwYW5lbGNvbG9yMj0tMQ0KYWN0aXZlcGFuZWxjb2xvcmRhcms9LTENCmFjdGl2ZXBhbmVsY29sb3JkYXJrMj0tMQ0KU2hvd0FsbERldGFpbHM9MQ0KU3BlY2lhbFZpZXc9MA0Kc2hvdz0xDQpzb3J0b3JkZXI9MA0KbmVnYXRpdmUgU29ydG9yZGVyPTANCltyaWdodF0NCnBhdGg9YzpcDQpWaWV3TW9kZT0xMDAwMQ0KYWN0aXZlcGFuZWxjb2xvcj0tMQ0KYWN0aXZlcGFuZWxjb2xvcjI9LTENCmFjdGl2ZXBhbmVsY29sb3JkYXJrPS0xDQphY3RpdmVwYW5lbGNvbG9yZGFyazI9LTENClNob3dBbGxEZXRhaWxzPTENClNwZWNpYWxWaWV3PTANCnNob3c9MQ0Kc29ydG9yZGVyPTANCm5lZ2F0aXZlIFNvcnRvcmRlcj0wDQpbUmlnaHRIaXN0b3J5XQ0KMD1jOlwJIzANCltMZWZ0SGlzdG9yeV0NCjA9QzpcUHJvZ3JhbURhdGFcCSMwDQoxPWM6XAkjNyxQcm9ncmFtRGF0YQ0KW0xpc3RlclBsdWdpbnM2NF0NCiRjaGVja3N1bSQ9MzAxNDY3Mg0K'
     $wincmdini = [System.Convert]::FromBase64String($wincmdini)
     [System.IO.File]::WriteAllBytes("C:\Program Files\totalcmd\wincmd.ini", $wincmdini)
@@ -191,15 +191,12 @@ function Set-DefaultSetup {
     Start-Process -FilePath "C:\Program Files\Mozilla Firefox\firefox.exe"
     Start-Sleep -s 3
     Stop-Process -Name 'firefox' -Force 
-
-    $configjs = 'Ly8gc2tpcCAxc3QgbGluZQpsb2NrUHJlZigneHBpbnN0YWxsLnNpZ25hdHVyZXMucmVxdWlyZWQnLCBmYWxzZSk7CgpPYmplY3QgPSBDdS5nZXRHbG9iYWxGb3JPYmplY3QoQ3UpLk9iamVjdDsKY29uc3QgeyBmcmVlemUgfSA9IE9iamVjdDsKT2JqZWN0LmZyZWV6ZSA9IG9iaiA9PiB7CiAgaWYgKENvbXBvbmVudHMuc3RhY2suY2FsbGVyLmZpbGVuYW1lICE9ICdyZXNvdXJjZTovL2dyZS9tb2R1bGVzL0FwcENvbnN0YW50cy5qc20nKQogICAgcmV0dXJuIGZyZWV6ZShvYmopOwoKICBvYmouTU9aX1JFUVVJUkVfU0lHTklORyA9IGZhbHNlOwogIE9iamVjdC5mcmVlemUgPSBmcmVlemU7CiAgcmV0dXJuIGZyZWV6ZShvYmopOwp9Cgp0cnkgewogIGxldCBjbWFuaWZlc3QgPSBDY1snQG1vemlsbGEub3JnL2ZpbGUvZGlyZWN0b3J5X3NlcnZpY2U7MSddLmdldFNlcnZpY2UoQ2kubnNJUHJvcGVydGllcykuZ2V0KCdVQ2hybScsIENpLm5zSUZpbGUpOwogIGNtYW5pZmVzdC5hcHBlbmQoJ3V0aWxzJyk7CiAgY21hbmlmZXN0LmFwcGVuZCgnY2hyb21lLm1hbmlmZXN0Jyk7CiAgQ29tcG9uZW50cy5tYW5hZ2VyLlF1ZXJ5SW50ZXJmYWNlKENpLm5zSUNvbXBvbmVudFJlZ2lzdHJhcikuYXV0b1JlZ2lzdGVyKGNtYW5pZmVzdCk7CgogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvQm9vdHN0cmFwTG9hZGVyLmpzbScpOwp9IGNhdGNoIChleCkge307Cgp0cnkgewogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvdXNlckNocm9tZS5qc20nKTsKfSBjYXRjaCAoZXgpIHt9Ow=='
-    $configprefsjs = 'cHJlZigiZ2VuZXJhbC5jb25maWcub2JzY3VyZV92YWx1ZSIsIDApOwpwcmVmKCJnZW5lcmFsLmNvbmZpZy5maWxlbmFtZSIsICJjb25maWcuanMiKTsKcHJlZigiZ2VuZXJhbC5jb25maWcuc2FuZGJveF9lbmFibGVkIiwgZmFsc2UpOwo='
+    get-firefoxfiles
     $configjs = [System.Convert]::FromBase64String($configjs)
     [System.IO.File]::WriteAllBytes("$Env:Programfiles\Mozilla Firefox\config.js", $configjs)
+
     $configprefsjs = [System.Convert]::FromBase64String($configprefsjs)
     [System.IO.File]::WriteAllBytes("$Env:Programfiles\Mozilla Firefox\defaults\pref\config-prefs.js", $configprefsjs)
-    
-    $firefoxcss = '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'
 
     $FirefoxProfile = (Get-ChildItem -Directory -Path "$Env:USERPROFILE\AppData\Roaming\Mozilla\Firefox\Profiles" -Filter '*.default-release').FullName
     $FirefoxProfilecss = $FirefoxProfile + '\chrome.7z'
@@ -574,41 +571,34 @@ function Backup-Firefox {
         $firefox | Stop-Process -Force
     }
     Start-Sleep -Seconds 3
-    Try {
-        get-command "7z" -ErrorAction SilentlyContinue -ErrorVariable ModFail             
-    }
-    Catch {
-        choco install 7zip.install
-    }
+    Confirm-choco -exe "7z" -package "7zip.install"
 
     $CurrentPath = (Get-Location).path
     $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    if (test-path "$profilepath\chrome" -PathType Container) {
+        $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\chrome.7z" + '" -r "' + "$profilepath\chrome\*" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    }
     $extensionsJSON = Get-Content -Raw "$profilepath\extensions.json" | ConvertFrom-Json
-    $extactive = New-Object System.Collections.ArrayList
-    $extdisabled = New-Object System.Collections.ArrayList
     $i = 0
-
-
     foreach ($EXT in $extensionsJSON.addons) {
         if ($extensionsJSON.addons[$i].active -eq $true) {
-            if (isURIWeb $extensionsJSON.addons[$i].sourceURI) {
-                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-(?!media).*.xpi', "-latest.xpi" -replace '\?.*'
-                $extactive.Add($extensionsJSONsuncle.split('?')[0])
+            if ($extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path) {
                 New-Item -Path "$CurrentPath\activeextensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
                 $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
                 $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
                 Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\activeextensions\$extensionsJSONsuncle.xpi"
             }
+
         }
         else {
-            if (isURIWeb $extensionsJSON.addons[$i].sourceURI) {
-                $extensionsJSONsuncle = $extensionsJSON.addons[$i].sourceURI -replace '-(?!media).*.xpi', "-latest.xpi" -replace '\?.*'
-                $extdisabled.Add($extensionsJSONsuncle.split('?')[0])
+            if ($extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path) {
                 New-Item -Path "$CurrentPath\extensions" -ItemType Directory -Force  -ErrorAction SilentlyContinue
                 $extensionsJSONsuncle = $extensionsJSON.addons[$i].id
                 $extensionsJSONsuncle2 = $extensionsJSON.addons[$i].path
                 Copy-Item -Path $extensionsJSONsuncle2 -Destination "$CurrentPath\extensions\$extensionsJSONsuncle.xpi"
             }
+
         }
         $i++
     }
@@ -647,18 +637,34 @@ function Backup-Firefox {
     Remove-Item -Path "$CurrentPath\activeextensions\firefox-alpenglow@mozilla.org.xpi" -ErrorAction SilentlyContinue
     Remove-Item -Path "$CurrentPath\activeextensions\ebay@search.mozilla.org.xpi" -ErrorAction SilentlyContinue
 
-    $extactive | Out-File "$CurrentPath\extensions.txt"
-    $extdisabled | Out-File "$CurrentPath\disabled-extensions.txt"
-
     $ProfileFileName = Get-Date -Format FileDateTime | ForEach-Object { $_ -replace ":", "." }
     $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\activeextensions.7z" + '" "' + "$CurrentPath\activeextensions\*" + '"'
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
     $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\extensions.7z" + '" "' + "$CurrentPath\extensions\*" + '"'
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+
+    New-Item -Path "$CurrentPath\ExtensionSettings" -ItemType Directory -Force  -ErrorAction SilentlyContinue
+    $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    $moz_extension = $profilepath + "\storage\default\moz-extension*"
+    $moz_extensionList = Get-ChildItem -Path $moz_extension -Directory
+
+    foreach ($FILE in $moz_extensionList) {
+        New-Item -Path "$CurrentPath\ExtensionSettings\$($FILE.Name)" -ItemType Directory -Force  -ErrorAction SilentlyContinue
+        Copy-Item -Path "$($FILE.FullName)\*" -Destination "$CurrentPath\ExtensionSettings\$($FILE.Name)" -Recurse
+    }
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\ExtensionSettings.7z" + '" -r "' + "$CurrentPath\ExtensionSettings\*" + '"'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+
     $filelist = New-Object System.Collections.ArrayList
 
     if (Test-Path -Path "$CurrentPath\extensions.7z") {
         $filelist.Add("$CurrentPath\extensions.7z")        
+    }
+    if (Test-Path -Path "$CurrentPath\chrome.7z") {
+        $filelist.Add("$CurrentPath\chrome.7z")        
+    }
+    if (Test-Path -Path "$CurrentPath\ExtensionSettings.7z") {
+        $filelist.Add("$CurrentPath\ExtensionSettings.7z")        
     }
     if (Test-Path -Path "$CurrentPath\activeextensions.7z") {
         $filelist.Add("$CurrentPath\activeextensions.7z")        
@@ -693,9 +699,6 @@ function Backup-Firefox {
     if (Test-Path -Path "$profilepath\chromeappsstore.sqlite") {
         $filelist.Add("$profilepath\chromeappsstore.sqlite")        
     }
-    if (Test-Path -Path "$profilepath\webappsstore.sqlite") {
-        $filelist.Add("$profilepath\webappsstore.sqlite")        
-    }
     if (Test-Path -Path "$profilepath\cookies.sqlite") {
         $filelist.Add("$profilepath\cookies.sqlite")        
     }
@@ -726,7 +729,26 @@ function Backup-Firefox {
     if (Test-Path -Path "$profilepath\places.sqlite") {
         $filelist.Add("$profilepath\places.sqlite")
     }
-    $filelist | Out-File "$CurrentPath\filelist.txt"
+    if (Test-Path -Path "$profilepath\extension-preferences.jsone") {
+        $filelist.Add("$profilepath\extension-preferences.json")
+    }
+    if (Test-Path -Path "$profilepath\extension-settings.json") {
+        $filelist.Add("$profilepath\extension-settings.json")
+    }
+    if (Test-Path -Path "$profilepath\storage-sync-v2.sqlite-shm") {
+        $filelist.Add("$profilepath\storage-sync-v2.sqlite-shm")
+    }
+    if (Test-Path -Path "$profilepath\storage-sync-v2.sqlite-wal") {
+        $filelist.Add("$profilepath\storage-sync-v2.sqlite-wal")
+    }
+    if (Test-Path -Path "$profilepath\storage-sync-v2.sqlite") {
+        $filelist.Add("$profilepath\storage-sync-v2.sqlite")
+    }
+    if (Test-Path -Path "$profilepath\webappsstore.sqlite") {
+        $filelist.Add("$profilepath\webappsstore.sqlite")
+    }
+
+    $filelist | Out-File "$CurrentPath\filelist.txt" -Encoding utf8
 
     $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Firefox-Profile-Backup-$ProfileFileName.7z" + '" @"' + "$CurrentPath\filelist.txt" + '"'
 
@@ -742,11 +764,12 @@ function Backup-Firefox {
 
     Remove-Item -Path "$CurrentPath\extensions" -Recurse -Force
     Remove-Item -Path "$CurrentPath\activeextensions" -Recurse -Force
-    Remove-Item -Path "$CurrentPath\extensions.txt" -Recurse -Force
-    Remove-Item -Path "$CurrentPath\disabled-extensions.txt" -Recurse -Force
+    Remove-Item -Path "$CurrentPath\ExtensionSettings" -Recurse -Force
     Remove-Item -Path "$CurrentPath\activeextensions.7z" -Recurse -Force
     Remove-Item -Path "$CurrentPath\extensions.7z" -Recurse -Force
     Remove-Item -Path "$CurrentPath\filelist.txt" -Recurse -Force
+    Remove-Item -Path "$CurrentPath\ExtensionSettings.7z" -Recurse -Force
+    Remove-Item -Path "$CurrentPath\chrome.7z" -Recurse -Force
     if ($firefox) {
         $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
         $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
@@ -754,99 +777,309 @@ function Backup-Firefox {
     }
 }
 
+function Start-Sleep($seconds) {
+    $doneDT = (Get-Date).AddSeconds($seconds)
+    while ($doneDT -gt (Get-Date)) {
+        $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+        $percent = ($seconds - $secondsLeft) / $seconds * 100
+        Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+        [System.Threading.Thread]::Sleep(500)
+    }
+    Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining 0 -Completed
+}
+
+function Confirm-choco {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $exe,
+        [parameter(Mandatory = $True)]
+        [string]
+        $package
+    )
+    if (-not(Get-Command "$exe" -errorAction SilentlyContinue)) {
+        Write-Output "Not Installed"
+        if (-not(get-command "choco" -ErrorAction SilentlyContinue)) {
+            Write-Output "Choco not Installed"
+            Install-Choco
+        }
+        choco install $package
+    }
+    Write-Output "Installed"
+}
+
+function get-firefoxfiles {
+
+    $Global:configjs = 'Ly8gc2tpcCAxc3QgbGluZQpsb2NrUHJlZigneHBpbnN0YWxsLnNpZ25hdHVyZXMucmVxdWlyZWQnLCBmYWxzZSk7CgpPYmplY3QgPSBDdS5nZXRHbG9iYWxGb3JPYmplY3QoQ3UpLk9iamVjdDsKY29uc3QgeyBmcmVlemUgfSA9IE9iamVjdDsKT2JqZWN0LmZyZWV6ZSA9IG9iaiA9PiB7CiAgaWYgKENvbXBvbmVudHMuc3RhY2suY2FsbGVyLmZpbGVuYW1lICE9ICdyZXNvdXJjZTovL2dyZS9tb2R1bGVzL0FwcENvbnN0YW50cy5qc20nKQogICAgcmV0dXJuIGZyZWV6ZShvYmopOwoKICBvYmouTU9aX1JFUVVJUkVfU0lHTklORyA9IGZhbHNlOwogIE9iamVjdC5mcmVlemUgPSBmcmVlemU7CiAgcmV0dXJuIGZyZWV6ZShvYmopOwp9Cgp0cnkgewogIGxldCBjbWFuaWZlc3QgPSBDY1snQG1vemlsbGEub3JnL2ZpbGUvZGlyZWN0b3J5X3NlcnZpY2U7MSddLmdldFNlcnZpY2UoQ2kubnNJUHJvcGVydGllcykuZ2V0KCdVQ2hybScsIENpLm5zSUZpbGUpOwogIGNtYW5pZmVzdC5hcHBlbmQoJ3V0aWxzJyk7CiAgY21hbmlmZXN0LmFwcGVuZCgnY2hyb21lLm1hbmlmZXN0Jyk7CiAgQ29tcG9uZW50cy5tYW5hZ2VyLlF1ZXJ5SW50ZXJmYWNlKENpLm5zSUNvbXBvbmVudFJlZ2lzdHJhcikuYXV0b1JlZ2lzdGVyKGNtYW5pZmVzdCk7CgogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvQm9vdHN0cmFwTG9hZGVyLmpzbScpOwp9IGNhdGNoIChleCkge307Cgp0cnkgewogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvdXNlckNocm9tZS5qc20nKTsKfSBjYXRjaCAoZXgpIHt9Ow=='
+    $Global:configprefsjs = 'cHJlZigiZ2VuZXJhbC5jb25maWcub2JzY3VyZV92YWx1ZSIsIDApOwpwcmVmKCJnZW5lcmFsLmNvbmZpZy5maWxlbmFtZSIsICJjb25maWcuanMiKTsKcHJlZigiZ2VuZXJhbC5jb25maWcuc2FuZGJveF9lbmFibGVkIiwgZmFsc2UpOwo='
+    $Global:firefoxcss = 'N3q8ryccAAQ7I3h6SiUAAAAAAAAjAAAAAAAAAOvkd6nghJUkfl0AF+B8e4WURK6MrSSfHMQWxtfzdodaqgTG2fMeaiPRoFCVWocitQBjf9GqN1HTvZpHF56DAVG75DjMGlGZF9Xh6SiQJPCQv0wwp3d5ucdRfT5PHCT6vh9ilDTjHTF9XdjyUzlBOdNBvjb9xKUiJNeZWjB6XyhDXAz5fiWs+QyMiAC1ruusC/S/vVQ2s8Je4shPvWJR7+TvDBy1CrImU9tYc9sT8hLjtHe/LjCUqHqOmfB6uaV4/jsk9asg16vcw3jF8mZXH1MVXtohTpkGlCvHl9o3iRYLZ0MKnOlFl5+LxMmIg642oEXbKPBoHnY/h8gpSw91vhC4+yl11m04oIOCgmBgaHqvezuQ8fxepKNajgBnvoQWNGIXlV7iP9gSh9kzcptMy02L99gBJsnvb9nhuShVh7ecwXaR/1QqFHYXAqUuwhHnJFJVIFieFGsFJpFot9bhv4GVnca6fKW46ZxnK/c7j/FjjE8Fsdg0eHng5DEBHh0SJ3q1X2y2gF4r47DK8/NAy9VjuMcH33kVFhunq1KLILEcShCZXR2an3HpVqyrcP/Wp9plClK5Tb26BwhqtoH3EmK5XUh5ZOI+rJYtOrnbixmGKJZqwQIr2JsnpaxQg6gOCb3qgnxt/RvFfNtsDHtap2JfUNB9TjnIxymFhqYpf35/j40vKo12sF96VL9Jq0xrLNioI0vskl5vPAxAhg6pq2/KB2tehllR2FWSKChiBlzaokGgK7v9kanvBr/AZXJHXYQsSF5gnWBWYP0uONh1JEiB4Hdeh63fkbXNHXhVoL0Q04L04StNEeIpMqNuZp2RpKF0thBFupPqnsG8njL3DRP2EPKzDZoUWf8+wzY2FzKg71V4GobjynPoEWIOCi9OpKrCHph6/KBG2Wlb7ubiK19poI8AKm6TTO0hpa3bvjXFkp3y5mJs/NekV5jiRyhiydlkhurdmD6x50kYneUN6xtUZLUzIFlOwMi4RT73lFPi9Q2TyGt3XQRNIU8B4JWpWkfu45YSNuEvLwGCwurANAgxC27jAEsZO4Lv8Vf3LNUErg+CDY7hrRAhbl2ss3f88f/TVp/RGx74/sjbgFjoHV9WkOgwNKlgi7PLvQmPvHYlYALYIGbiE/hl7IZiRXOyt9CA9ujpoHlDyTNZAVAWnkk2Ob3bgE66GSpgeaoCvoCrGbVZ2san/9NacpbaFZX08KYV7slqry0DHhSyWn18d8Gn6KL+JIU/z0KsS7oORBDLp2G+m41K805/Ea3tuTJyUaCI4dNolGewI7qPEdk5wiUjuGuKrUK0UJZYZaBsNEEW1/U6vbZl8hEZ+2v6o7RIa1g+YsVEsJ+Pdr5b7LWTReA8FcXL/UBzEerY+2NB3NML1SrAwa51uFpN2QLIIEdJLbXmWCpW9GJfWuXFTvoAjiP9mqjK2qGtAbUGq37kg9JY5/IFCk0HlbMZHsCu2Hjg6UQG1HWZlvMIBG6Ut84h3oI/QoexneOJBh96FH67OwKcyJX/vWU7NnGF+5F9rkfWqJtjPdxxiNdKKHdG3z0ZMOD3WgiPFR3TqsNoj7B6u9aORhMm1XGYz6Rvr+i9g10XCbyF/QCorrRFDqClhZGNXuvI9Hz+UJkZLgPpDExigsuOlRK8NuqCKnXtN/LyPBPub/qNzS8+eiSNEYRBevEOwHTIKacAIzXbYaNGUl0JORKCz3raun20e7nNdulH2xcMayz5FfxcZatsvJpC11JiEV4g8y23+FrJlO+jxsuWyUXQrpT+Jl9gsk8b1icu6Uc6vSouDFbnFkps7jJGRl67TlSx2qWBgr2J4BmaA9Djwyxos32gzIOLosPlHBmBtnt5rtnyMGiZ2hYNrZ5g8W+Dm8Wg5jeA2qYu3h2LZ7urFpxkATrWzpOBzE7S76TEK3GVxwOode3/NOH4vyHY6fvQjw9mxlpByEDyw7ONNH8ku6b4kOyDqMvUIqS0qdtDEU8zw2xJ/D9CAU6Kj/XMTi0jeeWFakm9z9tNVckjsX439l1Sc26NskUQZpVlxYcX3TjO8k9rUvyp/sVAkCKMWglfRLMSaGgtPpA6FE1zkl7CJMgMhN0HCmzwb4ffshqTqmyUr13YFEqZHcPJEt1vuzOOic0HLTbrpfz5X4JWdlcSbOpShwzcuDzVyt8Of3eQBG3BbctbaUXj8MxgcZ2rkhQNGXqesNdEl3fKliYOHtSBP7jPKHtPZEPdXckitUYH9araKCSY9GvfAaaJ7lPSJaeGVMzDlc5yammC7n2dvtk3+Tszj0POB7mwlS+OjKZLiwBzfuOr82OrLyBJx1AcBvcwP2lJcuvrpc71mS23iFGbRSLD26vycx9jnel6DUSJqWZdMfFHZ4URa4FqRBPWeJ0VZmi1X+Fqm/z3nXOFR9wGrKH8Sq4+cFrStcNJDLcKMyNtl6AQPKTyke4QtccsQbyhDXSdU4donHGAC/JjAojGxtER/9kWt3prGNHtCO/nL4nZRNaNB8hgmkJrOIYBIar5TdUDlWme79wV1hLfy9XgHUNOlCo6QOF4nm0FkvJl754kaIuscUdv+IeNzv70XNvdxUjKT6daiwq2ZyC1pC+zh/dZewG2Y/hwxNXFVyuxOSEXEMlql6sqGHmvK37ud6iFcI/ZKdb0GSCYw/17IE+6nvZACn3sFqAoe5EZM7iOVJrWh3igq+gszJ2p1qMWcd6CbYyIDueDYiP+Th2BNJMHjOm/gJjIJKN5ynFESaXdS27jaDBdYbEDEjRFqJ+Am1mW1TxE3LN+454ArxBMzr/I1CKNipMj4XaXTHbMsaBMoFg3yWx7OdksPtYyc3+cUqWFWx8DupoCkzS9JqOa0njobG9SH5UnP+mF3nv9WwVKvW9PepPhjG1NltdtW86xEGSm/6r1jWjMAzKZE0Wyt2Vqf9Uh/d2/Tn58ajt2/VRJqZExC/+cwOR99ElyDKO6zu+EIq4AfwVCi0SP6+HEAiviFmIMeTA5fnOJ78otYSXal05D2ey5gzDm7PoRDL/hre0N6MiIXfJOhGeffrP8YHoVMhOY79t6V3ABSieqhMxq2DqDmCULOy0CBmEQvEQd+UtLtPf59nqUHDSHi0gndnfId1bdUFg7nuJEjcAjKCFWjfUJ6EuBFfTRyiK0wnjgf7cFEDrKYXYBZBqBmn+zUfqK+HQAwXOSEjsQKFNwiqPP4zkkv07pXlpYsulZqBERnlBYpwKRUr1C1vKw7lgByWUdpNiV2kEF9mBjSNSDPYuEBkrF6upwlkwKGR/9wVJu9ejLeSOxeNZzimAPpiMw4GDYoudQ7xiJurIyL+fT6nUUH8n/lvPyfG5mkaaiThQRLlhFw4FQI0jRcWWC+LNOl7OsXrQCYGeg9rX5Tk4ErGA8oysSCOB5e3OKxj8YmuLSSo0DQdkhdSKtY6WXyReZ4HyiXTOSPXjShNrfA48jmeTzwFTooENRBJBxmLcRUlQKLdUziq2Qd/7b1hdjk8DlRDpU+gS8G8sXfXhrd1MWL5nbQFBT5y0hc0vg8HaxAVUVnoWD00jjgdbMJ+Tz3b2xhJZ6GSSrve25fpGjzBWjEbvqwpwjdJAzEO6SHpQvFSUKm6vKDySbOebrmsL0mFNyD8VMonUvoc7tj1EySdCIjIpaImUljv4ipUlo0FFDcqk8y5lzhifWTk5hcGmkw7vjuPBuW5Pdp6sDGf6N+vg0oHwbSlXtk3QnLLWx9Aqk43t5TG566Ve04O2YHZRSoGwnVem8WB0cxrPvzZMBiVSRJVLB8eqPOjbOI6rBFdIbhDnEQDOBT5uJb607aK8wvn9pOEw2HeNWNsSR30ZbHcE5cRe/cCA4GMwTWbiAQ4k/M+zfRbHekltideNsarhXQIToD15yoRCufv3xDxq8LcHx0Hg4iZHvdHCT4TrB6dd2EKSnDfmk50yYezBMyi9Tq+gJ7jmeP//gxtSK2mSLpIlTw5uaI1R6GQ077CXuyTriP06WbTf3u8boVsPedQkB9voAL0jEvfrssfKR0ryTdWeAcetLT9TOrBxKhTVBLx/aXXqSvtfQwECcx0eEPkEBjqRsQ+eq2ZkaaVoVXp9sI4FJDy1+P3Nj1S3RzUtji8ey6bwwEjsj+VkQS7kk6V398/1LFVc6tmeGbhXtObMZsbxWQDQQTCU1fVDUPEMGbxhBM8TyCLOSy7OJc0imVGKCXQ6O/5/v6RQSYzOV3ufGlmaMNe5nT2tA0gQxdDYh/TEwkjBmYsBk0ptGovlEbewV6mvkR9BdDvb9/lMYXmLmG9/LoqWQx0Q9qVqOBzq9gWHDPiO8bW91HH9HZQqqr+cla7wXuZBS9qqDJYKdy2O2h/3d82N3IGDv38kwH+Fpk7umgBfGhR3yPGpF/qVSEs3oKQA4JXkh8fUGBZdS3JooisrdC4exHIxVFBaIxkiSIu45pdAVlwOy70Mxb5vFRShB/qlFkNmqZAFPdlBdHCdEtrSvLKfy5JQMKumEdZq6e4wXuRQPbrG8Ltoy4JKN1iKY7v8vP3VdQBRGKN90ItWib0xM8IHSiZdojyZXzea/7Y14qTBRpqJoVxZPfjUb8V4jnObStkI+I7jeG3ofH+kIS/U7ThZfnVr95XlKdeFbC1rptqFHvWZ+hlJpqg/N2x/uZNTQhoUOOgbAnSnsMAurCSvtfGfrWMEcCZjkythfIS0RPUvnNHjehvs3zinq+QB4ntDyp2QhL37uVzvSkin0sd/XbUzzRhqkbHWJxOGJKOLI88PwPmrft7AoS+FzpCM+yl5gYTLezXde3lqFNit9iQlI9nEJAsh0VayXedtCGfB0LN83Qq29xvsH2bnf/3oeVk9/UE6dQTBziKnwh3uBUUbAzZq1Q0QHxacAmp+MG7SrcigUa50wUgArep2VCa5zycA98RzyGY3qicjACDyjr9dUQ9KrVwLlzXvERmgGVe4Lrm1gyHSPrHcRZS0Rk1f/wjThuOHeOCOvMn0rN+jwXF1SqSec3/JfnoZq0C7+O/ima6CDmGZfp10MI+pyhs7qmay883uNACX+IMVy4qnQSNXiG2UZ7JqrB1SXz8j7KDZCU/cyA4HGDhXtRRdUo3sLuTthbc73aCkTAXA9RlqFKe6axn6pKJUisAU/bUtbjYOEZJmfH/Cs7E3Mfhjdab63FG5ldyW1gx8p0N8ydaMs9XFCbh0OT8KWWL7vDqp7oF1N9toLmMsYOLel2EhyyREXQf09R/SIjnG4nPd7YjpwSq5FHWivmZOQ12iuj9/p3fFLTTQ9MyJpv84pUiDvIkcW7UVB0C6IQSi7WjgR7Z5lmUml1H2OCY8xfD7f8GWm8L/nbLKgEZ4ql9F5r+9XbV1u7YACPjwV8oclP/Bb+gppzBJXeFgxLCMnLVvY9CLrWaExaso6oPChCgUWfasn4H3/zKxHsIIOhxuNL0PsiT0t3TY3R7CwRh6UrJPxZ6iumF/oiEOB7g9wwX8BeXbE0PW4RIv9I8RgX38+3PwGFb4c+b1mOiR7VTZcM33wclsLVLQvai2WTtkc2zVtZj+vQ5iEYXj7MvnZPWZxxIrihXOD7w8VGov/XexMKn6RsJsla+R91V3Vlk9HnvlPf5n9hht8GfRgEKDkYRxpog35H6GQJdZlNfbNvjeVxsfurmGwfU/1QV++pAn5ihRz5rMJh4V6KL1UomlqEjZB2xpEnSJIlijUN7JOHIROI7G5+A1JYLvB3gW3mD6GQHvjvJ4Z/u3uN/1RKptxc98UJPLmzskwmNNlHaFK/UEBqSLmjY+7GmeS4T/cayL/T5bhk/iNHJIOyJEckf+oNEuPkMVl0QK7mWaDscT6iD961ttQ9EVY/itEBUZdBZzfU4a4cnyh70ru05UiuBVwi0BpBBNVW9PMcMpO/MzvPKRxY6PI3jgwrdYzDXhulhwF8PSULfc5GCpFU+eAifHB+vRPGxUDc3c0TkCzqNmtV1Iss9NHEdRsA4lvTzJ82hH8NaH2Plftn9e3SNXWvnF0Bov7vflInc2h44WF5vEAzH12TJxIk2yHreaDVg7Lk3yIfp1B/G1lr55bbqTa5qGXzE+j964NAbDIcBYKyhieNaKklBbaWQStUshJf+6KjV8lttsE7I4RDSXjpNZiADwhAMDQ0hO1Olh5JfM/XlGwYQIVAt7pleCiTaiWd6PxyW5RFkbMEqqWuRxnRG2MTfPJico1wzXgd6wApgnXGSE3k53HpU7nKFclUzPzVV2Zakswb0KpX5540gMMBJW86WK+G+ZQFDJQCnX8rHaJCA7YWDolqQTgvKNXBByqq0drrvxDaZ1Ie59V6QIIShx6rgTqOeaX3ClqzN/DjIRGd34TgJQIZhEpLIFihAcOHFK4AGK/Lib0o99bGw+hOBBNvdtoTdvPJlDnf+9AtyxhqDh07Xdnqogl4dXyGYjyncQajrJbyRv9FYp6ZA1D6rY/iIsPBrOlyF4u13DSxoKKK7vYunK8G309qfiJnYanKyreSVGpC8qtASPM61ZpIofLYRuj3d1hTCl3t5RqvAcl/P3N829uOS5OoCVwqZGOhpm74k4+/2GzwRDAgt/Klg+Sik7qQTd6rWkqOKltkknDIWTTQMDIyfALqTdFic1nZ39QtEe9PyqcG8YjhkIgHmZmOpqPOKcCMJnosGQEbijn8yJbH1Leg5ZtU11oz/iA5EUfp3C72uaav1G5JleY8Gn2+KVntdBFHfUvAN2izq2yT6M0u3TmqkcTl1kZwWLXy/ywWNxcWmp2eJtTkqXaUb0/6qY/gIgejGP3Opl+GboDktPgu9sX02PTzuTk4mHxqPbJFNA1DIF91JshSokO29JjuZuhf+qbSIuqdn/aWNxNsBXzRywE5G4IInrKTTZFV1spHlV6oGxU3H/HRk45z/wnh4JhcPtqcEzBb+0aqUWVqeK57XW9pdYjEKmHoZoQ19s8xtwiXf3FbrdfoKSEbP7wux3H8MVokqZhStm06CMGEU97cY12hx3PknTotgxnT3rhGLUJr0vkZrDOp58kIzCkTpDMWkmwxxYDthp2CFtplby8DKQ9qvC94Tm1BSff2/W5Qtv/zo/JEC2QzaVXC/QoaUjxaJl6QdnNnREMBMc77cR3psdD1XSNunOWz78zJ6QPS9dUYznD1dzAlLPuMhadPeOXdhPx7hh2ltFq69MPNFj3T1nWIxN0WCeKkWGfQQYrbIBNegl5Yh9Yduq5a0svJWdpIwWT8zgQ2HKj/8QIgH0Js1RRRiTdHyUv3B5P1Y23VejfWTXYT7Ex5HlnPHwSPJxW6Rhk8PTz32GjICkI7jzUFSdwnyRAdDpAbvX+BH/wCvg7Qc4fT9EHeFTtldLjX7eQ6Uqf6l/kvdLO1D+n9OTP6TcAsHtatNQ5NiyjZnSiTFxgYrHcwGBx1yCpjiGukkWEKXu/DZ7BdTrF4vAKBevTq33eLi/HxewAyjVlSP4Jsb4HCKJudUimDsOvZqaMOvRaJ/MupqkyhGFDlBwYjsAeRO4XXQk4kcjn6Qkfz+fWNJRgTr/wjQ7jyrTbJpbRwOl5jwQZp1JJw+8RKjEM7bfph8qSIASBZV4nxVQr5BF5l5BheRvt1Fzr3A1SpyXV2/XkeP6q76cH/pGAiGn3ezyDxHJ2p/aPHsJJx+gGseCJpspiINWlM+bT230YP30ByuGZV0hLbzyCr5ClRrTX3PShBzTbsxYg21tTFT1yYDg1IgBROsLsIReGLRmqGlpGbfWLFHPW8SfGa82Ke2NSvA2JOUGdaiqCNqsQLA3gjaoiqmhY0aguwjnKk/e+871TwR+Cduu7svN1eKIESV5LUqqb2P8pLFs7svagaSPDvDGA6j9RS/2CUE9LHAmW9LsAYO7GXC3AXLNzHSH1naRrXk+VV4K2d0ghMKSMgwMlRNonTmh5zbl5CX3IjPzuFIj3HFoK6pKtHWYFzxwG7in9+j9ZGc4idyx0mExfgU1aBlDFALbPU9sLePIUirvYCr44Fqz1a7buzOioW8vRRi3nVDf0GPqF0p5oQtI/+KGTPhsAIVATzXXewgYi1JL7oIpuDsiXKk48Bk3GkzJcfE7jizUZoMWHzVdxVZb2YxvJ7NOZfqBxplTYcWG7Tk9Xq0JLWrCTfwFZyvjAopMnyo3Ck7nZppCw+fiBpL/WZJXkRJ8RCYIfZ/f9/g+rIF2K8CfhCxEmcHlodn5LQPAxs5ANsFf+VdwXXWofwQLrxl6AGa8s8QVrHBj9CPoeGhtg5RlWMM57jT4cboqCipF4F4s1SorLZsgRHbK2Sc0sYMaqigQ3ALv6dxHTN3OOTrsdbXbBGjD5bacxvGVa5vj1v7BppS5XgtRDRotGXpz5AOU/X6fhCEDzv5H0xQpHVaq+d0oO+QxZON3qfGO9kvrGCQp9T6zry6BcVg1FNGYS1V3Rvo8j3XXyXC7xaNSyFWYMOat0sVSqpHQCZjiy+Vp2+g9Nji2Df2kX62oOwFAqPnRdVUH6EFyYAABIwlSf2DFFzjUkv0dI9p+uHaIngYE1HaSf7ssyx3gQz0bc4sxxVeTEj7d4npr7s0FeB5n8rp0xXTLl0Qzp5w2O48iFH4caynnB0bcUb+oXuFilcqk5LQHCux3hqksK1wRerLZGysnSARq1MTCHQx24KkMmGc8K9YsdoWtVnnS4gP12xyiQbSnuAEnVy9EbOOrOchJrgBr+m7Alcq5recFD/tly3kKMZlXKmOwJPR54IMXHWKkPQ1WuIh2Z2BTCJznriV2N0q+vucFY0ZTyEuBGrb7Uaq/IvfVkSUcfM/2qdbxMqPJFAagQ4vWJ4mfWRPl2CThJfnqGfQfArB8ZXZXoiMMKaEOG5PT5IBs17UQYjjjaT/gdd+QF8afyJiDB/8KCODRGoJnC+Aa4pSvUAqJ9GabviQq5ExdUzGhIsk6YS4XsQrYRqoR9k4oTQQCWSV3/bFaG58VHsvdPllv/dUfSocqUnFueU88apREyw1XTQ56ORzdcreeZVgbcZvH2iqRU0yQX6TDD5p1RUHcOZKkCyJknpZABC36FwXovLqNd1jH9Xcr/19W73y77mBSKv82VrBTz03d4bL7J8nyPl4iRpicLG5la6QCDGXNHp3PoSoCjyPlnXD7ZKNB75iLf5wu24diWdE8nuA1PesO7nPo15pFeqHr7UJi0GHzCvr4CjZkVpdT4tt3YYzHsabHLemnsC/5jkiICnVSbY+AxQ5YNMdvjsHy10GvZc6VFcRPQ9fioL2zWFIqgBp94AldyppcIyQrbiYsBjq8HFZ0msWCkRGhwAA3w/yVF4tT9LnV/pJgvccxOTjVdJWHNMIJ4be/qTWwEY14Uj6tbTX/9EmbqhdfBAek5JER0kspObu9732rbo20GbZoSR8dokXQK/3w+G8al6OXtyDhQgAl3VmWVt7p1lBum0jzHLqhTj0Adv5oGYo/MXCwlFkUBDpTtCxgzaZZ/hdA/7tRCfof1Ta08Vov/xzHXQj1DF6RfW+hc3aSxM/0zRVQyJhaGwEMX8lBYXB9lvJoDRY/fwOYJltOd2s+8JggBNtuDEnb5IVhsgyD0FdhG82pwCAqtVBjqIrScwBmlnFi3bFEd9q7Gj+5QTKxPpFDJHBwLCj3Fv+L25nHZL/IUFVLF4PGb6bUVQVv9f/d365StWePWx3lQWeO6akLxMt24EvYG9YXvt0ey7RDUig2JSFU5zi9HADqQxik0yS+5qRxok1vgZYOgN4MdIp7hgtOxJpDiNB1UpEEuBUqMhjGXl6IjZnkan/e3les4vyJ+5uu7siBlTyyauboIlg4/DD+g/NY0BvuvvmWoCPoKQiTPW32cBV0HzeFUsPY3nqPvKdsSKJzZ+IpI2hfy/hWkVesRN4Hv4/9vcm0wQqWOVxpmB8QZhmmSfG8NDF+FoOwlANo5NwtmbR2cWnbeFGUQpHeMsDiE/pUjLc91ppFSCpxFM/yhO/lV9/L1lMg6txU14yH4yB8hjPvRhp+SJ6j/L/fWRysEC3n0d14PglQU2WAt/8iT6uy+923dMiNIIRgdpiUgAGohT3kSqsUHw3SxSWIwW8WTFEdi4tdxqLbdb/g+5fuPgjPOgY3V4IkGnEAugh724Es5iAdB84SQ4jTYqbdi6oYHY0FvJFVJ+l8lZU30F38AcaCX2xC+LM3+jpMBLNB65b3AUDateeDvKb3F8eGVOFQJICFpr1Nam0Fe3RAVywzvIoY+zBAV0jv/G6aklVrpNJQhzOVvkLvlo3lJO8StJfmkNWr4AaAGosP9tBly6DEsXNR3kp0chwakcI+ambZLF/9EnvNcqxDEpsplzluMAYsW3gO6Zgu/FidcAD90KIzza1yXoFp5qQ3VCd4AVauaru0vHQJNOFX4mc7ZYxpHuM1QVy0HcsXY02Ulsq9U8k9SG2yt9EliVqyIxkncWMBZKYXM0XD57zniYyePCLD8dzka50gdl3UsPKuLrrVvFOS+ACwq5p+ChysACKgkjA4FgTn6zLw8TPQIM1cLvguCT1cfhGb5wj81zxa8leJO32qYgnQb2yiV7l6EjLp//Mn6teRn2DUqf/QWreaYKCfWwhf5/jiGWkJKSKZ0xFdhtqmvI9l2gDnePjTLjMUYGW4lfQ4C1IFWU+CM3boU0xDsWCZp5CPPMP06qghfj2Xlgw42AfBDprmIJyDC9YxOkjQihshDGPNgSrWkTIshc7H4PSIuZjbBHeZsBaxYGgIsVg4LftY7asuwFhqIWjxO3gUsPCY+9aXvDp3MxxFySivDqFPW4OHdFTUab45DUsHL4Tfd9VZ4OMWNXhyU/bPuSQDeV75AgfbUIEIXfNzQGtb47D1CtP3y8j5IoydNXDRHoDr2+iz3E/NUe+EgdY/ROWJZzOA/3lUc1jgAtSSqtXX6bcjn49MUIZ6arkHgbHPUpofi5pyAJ8T+axkbYReJeY5h0Azg8b4g15EBANpKFIxW6FnkJRlb2ZnBXvWSJiasAWENdzA/bKg7rPvMWQa0tiBqmB6Y3u7H4hfL80+NDh015sUekJRHbNgYHqqnDrG81PAvOe0GS8Or0aJr6tfd+Cj/BlfsX0mQhz8zaSV7NPqZcV8HIdqcvPw17eOd3OEdPcwd9RW++x+RlBuS7tDQ61nmAHpK7fGesfsEP0PfG6rzUfB5TgfzXgHM195kzxdY+NTfi2KbxPoOZ+pLaesy/mhgNvtI4ILgSKLG09d7ObK1Z+Ma4jHZi3CfICKmRrJS5jDzleebEWda1Heja/cGWx8LEa7Fs97ToVeXQUP6ntZQ9Grd6CXF9oUavlKG3kV4yfmPDFn0Hl+z2F8G/R8xF5RByqMiUyEK6NmaEGmez+I5oSdnFx9TxkLbYUFQI9/1BVc9qUQvCTDUS0OdFQRad9c3yuIRvscVF2x9Zrs80ED5MO86EmZGEPcS8Z+579dO4+mnKokIN2sZSw7L4pcTUUe4auvqn1c1YkkDu9w+L5h6G77v2EwrTnwsxDt9GAQJVB5c/yJgzQUpicXC0ckg2k6qnJe5fl4AKiAmreuVoACok+ibpvRMmqPLyQfdsCBclSP0F50FUmCdvM9JxNIRwveU86jP84AkSFmmdQfxtB1p87DtOU2JPl7ESVGKgJxg8cCOmue02Zpx3saC1tsG/KsBXdZJJ5bU4v0MN5VSrcUY4pfLg+VGr8GLypBn1sRKs5zCsidv27l4N4nyXblrqBKdiinJhJhPSxryC5Ih4lnhcMWBooisF3dH1naxS7nW7P3IM60FeC3ZnWKQbYm2S9QBZl2YiaQRApC18I350An9KFW7GJD1fL9Prr/1AAzlTuftMvfaqV2qQE5A0vuqtfMu6cQCGFLORZG3OXYId3Q7pPeJWhji1y7UL3EG6xDkZdZHvBjfMpg2bDGUi89FlIxsY2x7DlK9MyMdNeg0L7PL5+/w3kFESSIVO1ZI6YdbBYWhuJwnEPOLD0fQjEAHSgNsa9uRmiIEptwxCxWrrFJhqb3f4izQHdAnpPJTIhdo489q4YkILBJGOJtW317iJ1KHYhLMJRuqA+78tniuWw2AM8qVtoIf3nhNevznxYY5+40NG3dWoa6UGw03dWWV/eSn5Q6Ihln4qHHn5AcHiRusy/yiWz+3OztkRqexQMBonxJLvpfpZl3P7jTY+RxLap5fAwVOASM30+LFUVdlxyls7Og/8vaQMb1GLJcDbKVejTJpVQmFG/e30xJfsmZtlzBnsollsDcnQ0xWGNt/j6xK+3Lm82HdQ54psMZCxCvUQjtCY7uPNpNn4Gj5qRjbS4eKQXiOrYXOx2tGy6dDQ0pBjmM+VPBe4g+A2f4WDmLOxq8+zse2RFNnM4/3MVhKCrBS/K3cFLXCQuoGBAGz2hNWJANEEMMSZrzYROkmTH0NIZ6Pu0SOeqEBzABElnBIgOS/Pgxb/EN7J9oXdAO2HY64KQul+mTsE14UmIkvsl2n/eCEcNqlZAFkhwNDeifjIvzBATcp7DY3vn1PheM/kLbpaJEKAAAAgTMHrg/Wu9t6lyTT/rNwFrFh5wCRjWNir6bo9ziSvi4wWnN7KedSi+M/g+QP3mwKED4W12Dn8RtXHpS3x4/ud/HGXfjGO/5bE1M9hVgd0yN87GBJp8l5QCPehiQrjODQxIlK5uF9K/ME0dG8gHavD2Sq/QZtGB2cYte5oXcT4MDAk3Tgu/NRLABQkCZ9WM/4OpTB+zB0ANMgvwyDgTddpqEJvg2l0s2zHbfPyUflFnVLY5Z4qQQi95x1qzI9fYm1424XBqSGAQmAxAAHCwEAASMDAQEFXQAQAAAMgUIKAduGYUQAAA=='
+}
+
 function Restore-Firefox {
     [CmdletBinding()]
     param(
         [parameter(Mandatory = $True)]
         [string]
-        $FILE = "C:\WORK\Firefox-Profile-Backup-20221020T1227110604.7z"
-
+        $FILE
     )
-    
-    Try {
-        get-command "7z" -ErrorAction Stop -ErrorVariable ModFail             
-    }
-    Catch {
-        choco install 7zip.install
-    }
-
+    Confirm-choco -exe "7z" -package "7zip.install"
+    Confirm-choco -exe "SetDefaultBrowser" -package "SetDefaultBrowser"
+    #start firefox
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
         $firefox | Stop-Process -Force
     }
+    else {
+        if (Test-Path -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox") { $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion }
+        if (Test-Path -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main") { $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe }
+        if ($FirefoxEXE) {
+            Start-Process -FilePath $FirefoxEXE
+            Start-Sleep -s 10
+            Stop-Process -Name 'firefox' -Force
+        }
+        else {
+            choco install firefox
+            Start-Sleep -s 10
+            $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
+            $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
+            Start-Process -FilePath $FirefoxEXE
+            Start-Sleep -s 10
+            Stop-Process -Name 'firefox' -Force
+            Start-Process -FilePath "SetDefaultBrowser.exe" -ArgumentList "HKLM Firefox-308046B0AF4A39CB" -Wait -PassThru -NoNewWindow
+        }
+    }
+    #stop firefox
 
     [string]$BackupTempFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
     New-Item -Path $BackupTempFolder -ItemType Directory -Force
     $ArgumentList = 'x "' + "$FILE" + '" -o"' + "$BackupTempFolder" + '"'
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
 
-    #disable Start
-    [string]$DisableExtensionsFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
-    New-Item -Path $DisableExtensionsFolder -ItemType Directory -Force
-    $ArgumentList = 'x "' + "$BackupTempFolder\extensions.7z" + '" -o"' + "$DisableExtensionsFolder" + '"'
-    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
-    Remove-Item -Path "$BackupTempFolder\extensions.7z" -Force
-    Remove-Item -Path "$BackupTempFolder\disabled-extensions.txt" -Force
-    $XPIList = Get-ChildItem -Path "$DisableExtensionsFolder*" -Include ("*.xpi") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
-    $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
-    New-Item -Path "$profilepath\extensions" -ItemType Directory -Force
-    foreach ($file in $XPIList) {
+    if (Test-Path -Path "$BackupTempFolder\chrome.7z" -PathType Leaf) {
+        get-firefoxfiles
 
-        Copy-Item -Path $file -Destination "$profilepath\extensions"
-    }
-    #disable Start
+        $configjs = [System.Convert]::FromBase64String($configjs)
+        [System.IO.File]::WriteAllBytes("$Env:Programfiles\Mozilla Firefox\config.js", $configjs)
 
-    $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
-    $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
-    Start-Process -FilePath $FirefoxEXE 
-    Start-Sleep -Seconds 5
-    
-    $firefox = Get-Process firefox -ErrorAction SilentlyContinue
-    if ($firefox) {
-        $firefox | Stop-Process -Force
+        $configprefsjs = [System.Convert]::FromBase64String($configprefsjs)
+        [System.IO.File]::WriteAllBytes("$Env:Programfiles\Mozilla Firefox\defaults\pref\config-prefs.js", $configprefsjs)
+
+        $FirefoxProfile = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+        $FirefoxProfilecss = $FirefoxProfile + '\chrome.7z'
+        $firefoxcss = [System.Convert]::FromBase64String($firefoxcss)
+        [System.IO.File]::WriteAllBytes($FirefoxProfilecss, $firefoxcss)
+        
+        New-Item -Path "$FirefoxProfile\chrome" -ItemType Directory -Force
+        $ArgumentList = 'x "' + "$FirefoxProfile\chrome.7z" + '" -aoa -o"' + "$FirefoxProfile\chrome" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+        Remove-Item -Path "$FirefoxProfile\chrome.7z" -Force
+        $ArgumentList = 'x "' + "$BackupTempFolder\chrome.7z" + '" -aoa -o"' + "$FirefoxProfile\chrome" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+        Remove-Item -Path "$BackupTempFolder\chrome.7z" -Force
     }
+
+    if (Test-Path -Path "$BackupTempFolder\ExtensionSettings.7z" ) {
+        $FirefoxProfile = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+        $FirefoxProfileES = "$FirefoxProfile\storage\default\"
+
+        $ArgumentList = 'x "' + "$BackupTempFolder\ExtensionSettings.7z" + '" -aoa -o"' + "$FirefoxProfileES" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+        Remove-Item -Path "$BackupTempFolder\ExtensionSettings.7z" -Force
+    }
+    #disabled Start
+    if (test-path -Path "$BackupTempFolder\extensions.7z") {
+        [string]$DisableExtensionsFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
+        New-Item -Path $DisableExtensionsFolder -ItemType Directory -Force
+        $ArgumentList = 'x "' + "$BackupTempFolder\extensions.7z" + '" -o"' + "$DisableExtensionsFolder" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+        Remove-Item -Path "$BackupTempFolder\extensions.7z" -Force
+        $XPIList = Get-ChildItem -Path "$DisableExtensionsFolder*" -Include ("*.xpi") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
+        $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+        New-Item -Path "$profilepath\extensions" -ItemType Directory -Force
+        foreach ($file in $XPIList) { Copy-Item -Path $file -Destination "$profilepath\extensions" }
+        $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
+        $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
+        Start-Process -FilePath $FirefoxEXE 
+        Start-Sleep -Seconds 10
+        $firefox = Get-Process firefox -ErrorAction SilentlyContinue
+        if ($firefox) {
+            $firefox | Stop-Process -Force
+        }
+        Remove-Item -Path $DisableExtensionsFolder -Recurse -Force
+    }
+    #disabled end
 
     #Active Start
-    [string]$ActiveExtensionsFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
-    New-Item -Path $ActiveExtensionsFolder -ItemType Directory -Force
-    $ArgumentList = 'x "' + "$BackupTempFolder\activeextensions.7z" + '" -o"' + "$ActiveExtensionsFolder" + '"'
-    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
-    Remove-Item -Path "$BackupTempFolder\activeextensions.7z" -Force
-
-    $XPIList = Get-ChildItem -Path "$ActiveExtensionsFolder*" -Include ("*.xpi") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
-
-    Remove-Item -Path "$BackupTempFolder\extensions.txt" -Force
-
-    $RegType = 'ExpandString'
-    $UserDir = "$env:windir\system32\GroupPolicy\User\registry.pol"
-    $RegPath = 'Software\Policies\Mozilla\Firefox\Extensions\Install'
-    $RegName = 1
-
-    foreach ($RegData in $XPIList) {
-        Set-PolicyFileEntry -Path $UserDir -Key $RegPath -ValueName $RegName.ToString() -Data $RegData -Type $RegType
-        $RegName++
+    if (test-path -Path "$BackupTempFolder\activeextensions.7z") {
+        [string]$ActiveExtensionsFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
+        New-Item -Path $ActiveExtensionsFolder -ItemType Directory -Force
+        $ArgumentList = 'x "' + "$BackupTempFolder\activeextensions.7z" + '" -o"' + "$ActiveExtensionsFolder" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+        Remove-Item -Path "$BackupTempFolder\activeextensions.7z" -Force
+        $XPIList = Get-ChildItem -Path "$ActiveExtensionsFolder*" -Include ("*.xpi") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
+        $RegType = 'ExpandString'
+        $UserDir = "$env:windir\system32\GroupPolicy\User\registry.pol"
+        $RegPath = 'Software\Policies\Mozilla\Firefox\Extensions\Install'
+        $RegName = 1
+        foreach ($RegData in $XPIList) {
+            Set-PolicyFileEntry -Path $UserDir -Key $RegPath -ValueName $RegName.ToString() -Data $RegData -Type $RegType
+            $RegName++
+        }
+        Start-Process -FilePath "gpupdate.exe" -ArgumentList "/force" -Wait -PassThru -NoNewWindow
+        $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
+        $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
+        Start-Process -FilePath $FirefoxEXE 
+        Start-Sleep -Seconds 20
+        Stop-Process -Name 'firefox' -Force
+        Remove-Item -Path $ActiveExtensionsFolder -Recurse -Force 
     }
-    Start-Process -FilePath "gpupdate.exe" -ArgumentList "/force" -Wait -PassThru -NoNewWindow
     #Active end
-
-    
-
-
     $fileList = Get-ChildItem -Path "$BackupTempFolder*" -Include ("*.*") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
-
+    $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    Remove-Item -Path "$profilepath\*sqlite-shm" -Force
+    Remove-Item -Path "$profilepath\*sqlite-wal" -Force
     foreach ($file in $fileList) {
         Copy-Item -Path $file -Destination $profilepath -Force
     }
-
     Remove-Item -Path "$BackupTempFolder" -Force -Recurse
-    $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
-    $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
-    Start-Process -FilePath $FirefoxEXE 
-    Start-Sleep -Seconds 5
-    
-    $firefox = Get-Process firefox -ErrorAction SilentlyContinue
-    if ($firefox) {
-        $firefox | Stop-Process -Force
+}
+
+function Backup-Factorio {
+    Confirm-choco -exe "7z" -package "7zip.install"
+    $CurrentPath = (Get-Location).path
+    $datestamp = Get-Date -Format FileDateTime | ForEach-Object { $_ -replace ":", "." }
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Factorio-Backup-$datestamp.7z" + '" "' + "c:\Users\$env:UserName\AppData\Roaming\Factorio\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Restore-Factorio {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $FILE
+    )
+    Confirm-choco -exe "7z" -package "7zip.install"
+    if (Test-Path -Path "c:\Users\$env:UserName\AppData\Roaming\Factorio") {
+        Remove-Item -Path "c:\Users\$env:UserName\AppData\Roaming\Factorio\*" -Recurse -Force 
     }
+    else {
+        New-Item -Path "c:\Users\$env:UserName\AppData\Roaming\Factorio" -ItemType Directory -Force
+    }
+
+    $ArgumentList = 'x "' + "$FILE" + '" -o"' + "c:\Users\$env:UserName\AppData\Roaming\Factorio" + '"'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Backup-COI {
+    Confirm-choco -exe "7z" -package "7zip.install"
+    $CurrentPath = (Get-Location).path
+    $datestamp = Get-Date -Format FileDateTime | ForEach-Object { $_ -replace ":", "." }
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Captain_of_Industry-Backup-$datestamp.7z" + '" "' + "c:\Users\$env:UserName\Documents\Captain of Industry\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Restore-COI {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $FILE
+    )
+    Confirm-choco -exe "7z" -package "7zip.install"
+    if (Test-Path -Path "c:\Users\$env:UserName\Documents\Captain of Industry") {
+        Remove-Item -Path "c:\Users\$env:UserName\Documents\Captain of Industry\*" -Recurse -Force 
+    }
+    else {
+        New-Item -Path "c:\Users\$env:UserName\Documents\Captain of Industry" -ItemType Directory -Force
+    }
+
+    $ArgumentList = 'x "' + "$FILE" + '" -o"' + "c:\Users\$env:UserName\Documents\Captain of Industry" + '"'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Backup-LocalGitHub {
+    Confirm-choco -exe "7z" -package "7zip.install"
+    $CurrentPath = (Get-Location).path
+    $datestamp = Get-Date -Format FileDateTime | ForEach-Object { $_ -replace ":", "." }
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Documents_Github-Backup-$datestamp.7z" + '" "' + "c:\Users\$env:UserName\Documents\GitHub\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Restore-LocalGitHub {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $FILE,
+        [Alias('o')]
+        [Switch]$overwrite = $false
+    )
+    Confirm-choco -exe "7z" -package "7zip.install"
+    if (Test-Path -Path "c:\Users\$env:UserName\Documents\GitHub") {
+        if ($overwrite) {
+            $ArgumentList = 'x "' + "$FILE" + '" -o"' + "c:\Users\$env:UserName\Documents\GitHub" + '" -aoa'
+        }
+        else {
+            $ArgumentList = 'x "' + "$FILE" + '" -o"' + "c:\Users\$env:UserName\Documents\GitHub" + '" -aos'
+        }
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    }
+    else {
+        New-Item -Path "c:\Users\$env:UserName\Documents\GitHub" -ItemType Directory -Force
+        $ArgumentList = 'x "' + "$FILE" + '" -o"' + "c:\Users\$env:UserName\Documents\GitHub" + '"'
+        Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    }
+}
+
+function Restore-PathBackup {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $FILE,
+        [parameter(Mandatory = $false)]
+        [Alias('d')]
+        [string]
+        $rootdrive = 'c'
+    )
+    Confirm-choco -exe "7z" -package "7zip.install"
+    $DFILE = Get-ChildItem $FILE
+
+    $RestorePath = Join-Path ($rootdrive + ":\") (($dfile.basename).Replace("~", "\").Replace("_", " ") -Split "-")[0]
+    if (-not(Test-Path -Path $RestorePath)) {
+        New-Item -Path $RestorePath -ItemType Directory -Force
+    }
+    $ArgumentList = 'x "' + "$FILE" + '" -o"' + "$RestorePath" + '"'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+}
+
+function Backup-tom42 {
+    Confirm-choco -exe "7z" -package "7zip.install"
+    $CurrentPath = (Get-Location).path
+    $datestamp = Get-Date -Format FileDateTime | ForEach-Object { $_ -replace ":", "." }
+    ## c:\Users\tom42\Documents\My Digital Editions\
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Users~tom42~Documents~My_Digital_Editions-Backup-$datestamp.7z" + '" "' + "c:\Users\$env:UserName\Documents\My Digital Editions\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    ## c:\Users\tom42\Documents\My Kindle Content\
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\Users~tom42~Documents~My_Kindle_Content-Backup-$datestamp.7z" + '" "' + "c:\Users\$env:UserName\Documents\My Kindle Content\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    ## c:\totalcmd\
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\totalcmd-Backup-$datestamp.7z" + '" "' + "c:\totalcmd\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+    ## c:\PATH\
+    $ArgumentList = 'a -spm -m0=lzma2 -mx=9 -mfb=64 -md=256m "' + "$CurrentPath\PATH-Backup-$datestamp.7z" + '" "' + "c:\PATH\*" + '" -r'
+    Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
+
+    $pw7exe = (get-command pwsh).source
+    $pw5exe = (get-command powershell).source
+
+    &$pw7exe  -Command "echo (Get-InstalledModule).name" | convertto-json | out-file "Powershell7Modules-Backup-$datestamp.json"
+    &$pw5exe  -Command "echo (Get-InstalledModule).name" | convertto-json | out-file "Powershell5Modules-Backup-$datestamp.json"
+
+    choco export "packages.xml"
+    (Select-Xml -Path "packages.xml" -XPath '/packages').node.package.id | ConvertTo-Json | out-file "ChocoPackages-Backup-$datestamp.json"
+    Remove-Item -Path "packages.xml"
 
 }
