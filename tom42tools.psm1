@@ -137,6 +137,16 @@ function Add-RunOnce {
 }
 
 function Set-DefaultSetup {
+    function Start-Sleep($seconds) {
+        $doneDT = (Get-Date).AddSeconds($seconds)
+        while ($doneDT -gt (Get-Date)) {
+            $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+            $percent = ($seconds - $secondsLeft) / $seconds * 100
+            Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+            [System.Threading.Thread]::Sleep(500)
+        }
+        Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining 0 -Completed
+    }
     #download apps
     Install-Choco
     $dlfile = New-Object net.webclient
@@ -566,6 +576,17 @@ function Backup-Firefox {
         $OUTFOLDER
 
     )
+    function Start-Sleep($seconds) {
+        $doneDT = (Get-Date).AddSeconds($seconds)
+        while ($doneDT -gt (Get-Date)) {
+            $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+            $percent = ($seconds - $secondsLeft) / $seconds * 100
+            Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+            [System.Threading.Thread]::Sleep(500)
+        }
+        Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining 0 -Completed
+    }
+
     $firefox = Get-Process firefox -ErrorAction SilentlyContinue
     if ($firefox) {
         $firefox | Stop-Process -Force
@@ -656,9 +677,13 @@ function Backup-Firefox {
     Start-Process -FilePath "7z" -ArgumentList $ArgumentList -Wait -NoNewWindow
 
     $filelist = New-Object System.Collections.ArrayList
-
+    $Localprofilepath = ("$env:LOCALAPPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    
     if (Test-Path -Path "$CurrentPath\extensions.7z") {
         $filelist.Add("$CurrentPath\extensions.7z")        
+    }
+    if (Test-Path -Path "$Localprofilepath\startupCache\webext.sc.lz4") {
+        $filelist.Add("$Localprofilepath\startupCache\webext.sc.lz4")        
     }
     if (Test-Path -Path "$CurrentPath\chrome.7z") {
         $filelist.Add("$CurrentPath\chrome.7z")        
@@ -777,17 +802,6 @@ function Backup-Firefox {
     }
 }
 
-function Start-Sleep($seconds) {
-    $doneDT = (Get-Date).AddSeconds($seconds)
-    while ($doneDT -gt (Get-Date)) {
-        $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
-        $percent = ($seconds - $secondsLeft) / $seconds * 100
-        Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining $secondsLeft -PercentComplete $percent
-        [System.Threading.Thread]::Sleep(500)
-    }
-    Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining 0 -Completed
-}
-
 function Confirm-choco {
     [CmdletBinding()]
     param(
@@ -809,6 +823,23 @@ function Confirm-choco {
     Write-Output "Installed"
 }
 
+function Confirm-Package {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [string]
+        $exe,
+        [parameter(Mandatory = $True)]
+        [string]
+        $package
+    )
+    if (-not(Get-Command "$exe" -errorAction SilentlyContinue)) {
+        Set-executionpolicy -Force -executionpolicy unrestricted; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Install-Module -Name $package -Force
+    }
+}
+
+
 function get-firefoxfiles {
 
     $Global:configjs = 'Ly8gc2tpcCAxc3QgbGluZQpsb2NrUHJlZigneHBpbnN0YWxsLnNpZ25hdHVyZXMucmVxdWlyZWQnLCBmYWxzZSk7CgpPYmplY3QgPSBDdS5nZXRHbG9iYWxGb3JPYmplY3QoQ3UpLk9iamVjdDsKY29uc3QgeyBmcmVlemUgfSA9IE9iamVjdDsKT2JqZWN0LmZyZWV6ZSA9IG9iaiA9PiB7CiAgaWYgKENvbXBvbmVudHMuc3RhY2suY2FsbGVyLmZpbGVuYW1lICE9ICdyZXNvdXJjZTovL2dyZS9tb2R1bGVzL0FwcENvbnN0YW50cy5qc20nKQogICAgcmV0dXJuIGZyZWV6ZShvYmopOwoKICBvYmouTU9aX1JFUVVJUkVfU0lHTklORyA9IGZhbHNlOwogIE9iamVjdC5mcmVlemUgPSBmcmVlemU7CiAgcmV0dXJuIGZyZWV6ZShvYmopOwp9Cgp0cnkgewogIGxldCBjbWFuaWZlc3QgPSBDY1snQG1vemlsbGEub3JnL2ZpbGUvZGlyZWN0b3J5X3NlcnZpY2U7MSddLmdldFNlcnZpY2UoQ2kubnNJUHJvcGVydGllcykuZ2V0KCdVQ2hybScsIENpLm5zSUZpbGUpOwogIGNtYW5pZmVzdC5hcHBlbmQoJ3V0aWxzJyk7CiAgY21hbmlmZXN0LmFwcGVuZCgnY2hyb21lLm1hbmlmZXN0Jyk7CiAgQ29tcG9uZW50cy5tYW5hZ2VyLlF1ZXJ5SW50ZXJmYWNlKENpLm5zSUNvbXBvbmVudFJlZ2lzdHJhcikuYXV0b1JlZ2lzdGVyKGNtYW5pZmVzdCk7CgogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvQm9vdHN0cmFwTG9hZGVyLmpzbScpOwp9IGNhdGNoIChleCkge307Cgp0cnkgewogIEN1LmltcG9ydCgnY2hyb21lOi8vdXNlcmNocm9tZWpzL2NvbnRlbnQvdXNlckNocm9tZS5qc20nKTsKfSBjYXRjaCAoZXgpIHt9Ow=='
@@ -820,9 +851,13 @@ function Restore-Firefox {
     [CmdletBinding()]
     param(
         [parameter(Mandatory = $True)]
-        [string]
-        $FILE
+        [alias("f")]
+        [string]$FILE,
+        [parameter(Mandatory = $false)]
+        [alias("s")]
+        [Switch]$silent = $false
     )
+    Confirm-Package "Set-PolicyFileEntry" "PolicyFileEditor"
     Confirm-choco -exe "7z" -package "7zip.install"
     Confirm-choco -exe "SetDefaultBrowser" -package "SetDefaultBrowser"
     #start firefox
@@ -835,22 +870,21 @@ function Restore-Firefox {
         if (Test-Path -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main") { $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe }
         if ($FirefoxEXE) {
             Start-Process -FilePath $FirefoxEXE
-            Start-Sleep -s 10
+            Start-GUItimer-Sleep -s 10
             Stop-Process -Name 'firefox' -Force
         }
         else {
             choco install firefox
-            Start-Sleep -s 10
+            Start-GUItimer-Sleep -s 10
             $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
             $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
             Start-Process -FilePath $FirefoxEXE
-            Start-Sleep -s 10
+            Start-GUItimer-Sleep -s 10
             Stop-Process -Name 'firefox' -Force
-            Start-Process -FilePath "SetDefaultBrowser.exe" -ArgumentList "HKLM Firefox-308046B0AF4A39CB" -Wait -PassThru -NoNewWindow
         }
     }
     #stop firefox
-
+    Start-Process -FilePath "SetDefaultBrowser.exe" -ArgumentList "HKLM Firefox-308046B0AF4A39CB" -Wait -PassThru -NoNewWindow
     [string]$BackupTempFolder = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName().Split('.')[0] + "\")
     New-Item -Path $BackupTempFolder -ItemType Directory -Force
     $ArgumentList = 'x "' + "$FILE" + '" -o"' + "$BackupTempFolder" + '"'
@@ -901,7 +935,7 @@ function Restore-Firefox {
         $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
         $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
         Start-Process -FilePath $FirefoxEXE 
-        Start-Sleep -Seconds 10
+        Start-GUItimer-Sleep -Seconds 10
         $firefox = Get-Process firefox -ErrorAction SilentlyContinue
         if ($firefox) {
             $firefox | Stop-Process -Force
@@ -930,19 +964,36 @@ function Restore-Firefox {
         $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
         $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
         Start-Process -FilePath $FirefoxEXE 
-        Start-Sleep -Seconds 20
+        Start-GUItimer-Sleep -Seconds 20
         Stop-Process -Name 'firefox' -Force
         Remove-Item -Path $ActiveExtensionsFolder -Recurse -Force 
     }
     #Active end
-    $fileList = Get-ChildItem -Path "$BackupTempFolder*" -Include ("*.*") -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
+    $fileList = Get-ChildItem -Path "$BackupTempFolder*" -Include ("*.*") -Exclude "webext.sc.lz4" -ErrorAction SilentlyContinue -Force | ForEach-Object { $_.fullname }
     $profilepath = ("$env:APPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    Start-GUItimer-Sleep -seconds 10
     Remove-Item -Path "$profilepath\*sqlite-shm" -Force
     Remove-Item -Path "$profilepath\*sqlite-wal" -Force
     foreach ($file in $fileList) {
         Copy-Item -Path $file -Destination $profilepath -Force
     }
+    
+    $FirefoxVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox" -Name CurrentVersion).CurrentVersion
+    $FirefoxEXE = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Mozilla\Mozilla Firefox\$FirefoxVersion\Main" -Name PathToExe).PathToExe
+    Start-Process -FilePath $FirefoxEXE 
+    Start-GUItimer-Sleep -Seconds 45
+    Stop-Process -Name 'firefox' -Force
+    $Localprofilepath = ("$env:LOCALAPPDATA\Mozilla\Firefox\") + ((Get-IniFile "$env:APPDATA\Mozilla\Firefox\profiles.ini").Profile0.Path).replace('/', '\')
+    Copy-Item -Path "$BackupTempFolder\webext.sc.lz4" -Destination "$Localprofilepath\startupCache\webext.sc.lz4" -Force
     Remove-Item -Path "$BackupTempFolder" -Force -Recurse
+    
+    if ($silent -eq $false) {
+        [System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms') | Out-Null
+        [System.Windows.Forms.MessageBox]::Show('Firefox Restore Complete', 'DONE')
+    }
+    else {
+        Write-Host "DONE"
+    }
 }
 
 function Backup-Factorio {
@@ -1083,3 +1134,155 @@ function Backup-tom42 {
     Remove-Item -Path "packages.xml"
 
 }
+
+function Start-Timer-Sleep($seconds) {
+    $doneDT = (Get-Date).AddSeconds($seconds)
+    while ($doneDT -gt (Get-Date)) {
+        $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+        $percent = ($seconds - $secondsLeft) / $seconds * 100
+        Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+        [System.Threading.Thread]::Sleep(500)
+    }
+    Write-Progress -Activity "Sleeping" -Status "Sleeping..." -SecondsRemaining 0 -Completed
+}
+
+function Start-GUItimer-Sleep {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $True)]
+        [int]
+        [alias("s")]
+        [alias("seconds")]
+        $RebootT,
+        [parameter(Mandatory = $false)]
+        [string]
+        [alias("m")]
+        $Message = "",
+        [parameter(Mandatory = $false)]
+        [string]
+        [alias("t")]
+        $Title = "PowerShell Countdown"
+    )
+
+    # This removes the use of the close "x" button on the pop-up countodwn box the users will see
+    $code = @'
+using System;
+using System.Runtime.InteropServices;
+
+namespace CloseButtonToggle {
+  internal static class WinAPI {
+    [DllImport("kernel32.dll")]
+    internal static extern IntPtr GetConsoleWindow();
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool DeleteMenu(IntPtr hMenu,
+                           uint uPosition, uint uFlags);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool DrawMenuBar(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    internal static extern IntPtr GetSystemMenu(IntPtr hWnd,
+               [MarshalAs(UnmanagedType.Bool)]bool bRevert);
+
+    const uint SC_CLOSE     = 0xf060;
+    const uint MF_BYCOMMAND = 0;
+
+    internal static void ChangeCurrentState(bool state) {
+      IntPtr hMenu = GetSystemMenu(GetConsoleWindow(), state);
+      DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
+      DrawMenuBar(GetConsoleWindow());
+    }
+  }
+
+  public static class Status {
+    public static void Disable() {
+      WinAPI.ChangeCurrentState(false); //its 'true' if need to enable
+    }
+  }
+}
+'@
+
+    Add-Type $code
+    [CloseButtonToggle.Status]::Disable()
+
+    Add-Type -assembly System.Windows.Forms
+
+
+    $height = 150
+    $width = 400
+    $color = "White"
+
+    #Create the form for the countdown box
+    $form1 = New-Object System.Windows.Forms.Form -Property @{TopMost = $true }
+    $form1.Text = $title
+    $form1.Height = $height
+    $form1.Width = $width
+    $form1.BackColor = $color
+
+    $form1.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle 
+    $form1.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
+
+    $label1 = New-Object system.Windows.Forms.Label
+    $label1.Text = "Not started"
+    $label1.Left = 10
+    $label1.Top = 70
+    $label1.Width = $width - 20
+    $label1.Height = 15
+    $label1.Font = "Verdana"
+
+    $form1.controls.add($label1)
+
+    $label2 = New-Object system.Windows.Forms.Label
+    $label2.Text = $Message
+    $label2.Left = 10
+    $label2.Top = 10
+    $label2.Width = $width - 40
+    $label2.Height = 70
+    $label2.Font = "Verdana"
+
+    $form1.controls.add($label2)
+
+    $progressBar1 = New-Object System.Windows.Forms.ProgressBar
+    $progressBar1.Name = 'progressBar1'
+    $progressBar1.Value = 0
+    #$progressBar1.Style = "Continuous"
+    $System_Drawing_Size = New-Object System.Drawing.Size
+    $System_Drawing_Size.Width = $width - 40
+    $System_Drawing_Size.Height = 15
+    $progressBar1.Size = $System_Drawing_Size
+    $progressBar1.Left = 10
+    $progressBar1.Top = 90
+
+    $form1.Controls.Add($progressBar1)
+
+    $form1.Show() | Out-Null
+
+    $form1.Focus() | Out-Null
+
+    $form1.Refresh()
+
+    $Seconds = 1..$RebootT
+
+    $i = 0
+
+    # The countdown timer
+    ForEach ($Sec in $Seconds) {
+        $i++
+        [int]$pct = ($i / $Seconds.Count) * 100
+        $SecLeft = $Seconds.Count - $i
+        $Min = [Int](([String]($SecLeft / 60)).split('.')[0])
+        $progressbar1.Value = $pct
+        $label1.text = "$Min" + " minutes " + ($SecLeft % 60) + " seconds left until done..."
+        $form1.Refresh()
+
+        Start-Sleep -Seconds 1
+    }
+
+    $form1.Close()    
+}
+
+
+
